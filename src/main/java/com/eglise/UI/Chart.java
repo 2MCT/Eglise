@@ -20,6 +20,7 @@ public class Chart extends JPanel {
 
     public Chart(int[] values, Date[] dates) {
         setSize(500, 800);
+        setLayout(new java.awt.BorderLayout());
         // Création des données
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for(int i = 0; i < values.length; i++){

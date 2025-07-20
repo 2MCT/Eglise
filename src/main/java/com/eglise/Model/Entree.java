@@ -124,6 +124,31 @@ public class Entree {
             return -1;
         }
     }
+    public static Entree[] entreeEntre(Date date1, Date date2){
+        Connection con = Connexion.connect();
+        try{
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM ENTREE WHERE '"+ date1 +"' <= date_entree AND date_entree <= '"+date2+"';");
+            ResultSet res = stmt.executeQuery();
+            int l = 0;
+            while(res.next()){
+                l++;
+            }
+            Entree[] entrees = new Entree[l];
+            stmt = con.prepareStatement("SELECT * FROM ENTREE WHERE '"+ date1 +"' <= date_entree AND date_entree <= '"+date2+"';");
+            res = stmt.executeQuery();
+            int i = 0 ;
+            while(res.next()){
+                entrees[i] = new Entree(res.getInt("identree"),res.getString("motif"),res.getDate("date_entree"),res.getInt("montant_entree"));
+                i++;
+            }
+            System.out.println(entrees.length);
+            return entrees;
+        }
+        catch(SQLException E){
+            System.err.println(E);
+            return null;
+        }
+    }
     public static Entree getEntree(int id){
         Entree entree = new Entree();
         entree.idEntree = id;

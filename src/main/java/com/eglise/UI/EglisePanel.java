@@ -4,26 +4,108 @@
  */
 package com.eglise.UI;
 import com.eglise.Model.EgliseModel;
+import com.eglise.Model.*;
 import java.awt.Color;
-
+import java.sql.*;
+import org.jdatepicker.impl.*;
+import java.util.Properties;
+import javax.swing.*;
 /**
  *
  * @author christalin
  */
 public class EglisePanel extends javax.swing.JPanel {
-
+    private JDatePickerImpl datePicker1;
+    private JDatePickerImpl datePicker2;
     /**
      * Creates new form EglisePanel
      */
     public EglisePanel() {
         initComponents();
         showPanel();
+        showChart();
+        initDatePickers();
         if(Integer.parseInt(this.soldeValue.getText().split(" ")[0])<10000){
             this.soldeValue.setForeground(Color.red);
         }
         else{
             this.soldeValue.setForeground(Color.black);
         }
+    }
+    private void initDatePickers() {
+        // Setting up date picker properties
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+        
+        // Create date model for date1
+        UtilDateModel model1 = new UtilDateModel();
+        JDatePanelImpl datePanel1 = new JDatePanelImpl(model1, p);
+        datePicker1 = new JDatePickerImpl(datePanel1, new DateLabelFormatter());
+        
+        // Create date model for date2
+        UtilDateModel model2 = new UtilDateModel();
+        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p);
+        datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+        
+        // Set layout for date1 panel and add date picker
+        date1.setLayout(new java.awt.BorderLayout());
+        date1.add(datePicker1, java.awt.BorderLayout.CENTER);
+        
+        // Set layout for date2 panel and add date picker
+        date2.setLayout(new java.awt.BorderLayout());
+        date2.add(datePicker2, java.awt.BorderLayout.CENTER);
+    }
+    
+    // Method to access selected dates
+    public Date[] getSelectedDates() {
+        Date date1Value = new  Date(((java.util.Date)datePicker1.getModel().getValue()).getTime());
+        Date date2Value = new  Date(((java.util.Date)datePicker2.getModel().getValue()).getTime());
+        return new Date[]{date1Value, date2Value};
+    }
+    
+    // Custom formatter for date display
+    private static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+        private final java.text.SimpleDateFormat dateFormatter = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        
+        @Override
+        public Object stringToValue(String text) throws java.text.ParseException {
+            return dateFormatter.parseObject(text);
+        }
+        
+        @Override
+        public String valueToString(Object value) throws java.text.ParseException {
+            if (value != null) {
+                java.util.Calendar cal = (java.util.Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+            return "";
+        }
+    }
+    private void showChart(){
+        Entree[] entrees = Entree.listEntree();
+        Sortie[] sorties = Sortie.listSortie();
+        int[] values = new int[entrees.length+sorties.length];
+        Date[] dates = new Date[entrees.length+sorties.length];
+        int courant = 0;
+        for(int i = 0; i < entrees.length; i++){
+            values[i] = courant+entrees[i].montantEntree;
+            courant+=entrees[i].montantEntree;
+            dates[i] = entrees[i].dateEntree;
+        }
+        for(int i=entrees.length; i < entrees.length+sorties.length; i++){
+            values[i] = courant - sorties[i-entrees.length].montantSortie;
+            courant-=sorties[i-entrees.length].montantSortie;
+            dates[i] = sorties[i-entrees.length].dateSortie;
+        }
+        Chart chart = new Chart(values,dates);
+        chart.setVisible(true);
+        histogramme.removeAll();
+        histogramme.setLayout(new java.awt.BorderLayout());
+        histogramme.add(chart, java.awt.BorderLayout.CENTER);
+        histogramme.revalidate();
+        histogramme.repaint();
     }
 
     /**
@@ -40,18 +122,21 @@ public class EglisePanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         soldeValue = new javax.swing.JLabel();
         histogramme = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         egliseName = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        entreeTable = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        sortieTable = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        date1 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        date2 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
         notHasEglise = new javax.swing.JPanel();
         information = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -74,23 +159,15 @@ public class EglisePanel extends javax.swing.JPanel {
 
         histogramme.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel2.setText("Histogramme de flux de caisse");
-
         javax.swing.GroupLayout histogrammeLayout = new javax.swing.GroupLayout(histogramme);
         histogramme.setLayout(histogrammeLayout);
         histogrammeLayout.setHorizontalGroup(
             histogrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, histogrammeLayout.createSequentialGroup()
-                .addContainerGap(100, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addContainerGap(100, Short.MAX_VALUE))
+            .addGap(0, 669, Short.MAX_VALUE)
         );
         histogrammeLayout.setVerticalGroup(
             histogrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(histogrammeLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         egliseName.setFont(new java.awt.Font("Quicksand Light", 0, 18)); // NOI18N
@@ -101,7 +178,7 @@ public class EglisePanel extends javax.swing.JPanel {
 
         jLabel5.setText("Mouvement d' entrée en caisse");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        entreeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -109,11 +186,11 @@ public class EglisePanel extends javax.swing.JPanel {
                 "Date d' entrée", "Motif", "Montant"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(entreeTable);
 
         jLabel6.setText("Mouvement de sortie en caisse");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        sortieTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -121,13 +198,49 @@ public class EglisePanel extends javax.swing.JPanel {
                 "Date de sortie", "Motif", "Montant"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(sortieTable);
 
         jLabel7.setText("Total Montant Entrant : ");
 
         jLabel8.setText("Total Montant Sortant : ");
 
-        jButton1.setText("Obtenir un PDF");
+        jButton1.setText("Générer un PDF");
+
+        javax.swing.GroupLayout date1Layout = new javax.swing.GroupLayout(date1);
+        date1.setLayout(date1Layout);
+        date1Layout.setHorizontalGroup(
+            date1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 104, Short.MAX_VALUE)
+        );
+        date1Layout.setVerticalGroup(
+            date1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 23, Short.MAX_VALUE)
+        );
+
+        jLabel9.setText("et");
+
+        javax.swing.GroupLayout date2Layout = new javax.swing.GroupLayout(date2);
+        date2.setLayout(date2Layout);
+        date2Layout.setHorizontalGroup(
+            date2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 128, Short.MAX_VALUE)
+        );
+        date2Layout.setVerticalGroup(
+            date2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 23, Short.MAX_VALUE)
+        );
+
+        jButton2.setText("Afficher");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout hasEgliseLayout = new javax.swing.GroupLayout(hasEglise);
         hasEglise.setLayout(hasEgliseLayout);
@@ -136,61 +249,73 @@ public class EglisePanel extends javax.swing.JPanel {
             .addGroup(hasEgliseLayout.createSequentialGroup()
                 .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(hasEgliseLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel4)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel6)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8)
-                            .addComponent(jButton1)))
-                    .addGroup(hasEgliseLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(25, 25, 25)
                         .addComponent(soldeValue))
-                    .addComponent(JLabelx, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(hasEgliseLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(egliseName, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
-                .addComponent(histogramme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                    .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(JLabelx, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, hasEgliseLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel5)
+                                .addGroup(hasEgliseLayout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(date1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel9)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel7)
+                                .addComponent(jLabel6)
+                                .addComponent(jLabel8)
+                                .addComponent(jButton1)
+                                .addComponent(egliseName, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+                                .addComponent(jScrollPane2)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(histogramme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         hasEgliseLayout.setVerticalGroup(
             hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(hasEgliseLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(JLabelx, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(soldeValue)
+                    .addComponent(jLabel1))
+                .addGap(39, 39, 39)
+                .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(hasEgliseLayout.createSequentialGroup()
-                        .addComponent(JLabelx, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)
-                        .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(soldeValue)
-                            .addComponent(jLabel1))
-                        .addGap(39, 39, 39)
                         .addComponent(egliseName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
-                        .addGap(0, 71, Short.MAX_VALUE))
-                    .addComponent(histogramme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(date1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2)))
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(100, Short.MAX_VALUE))
+            .addComponent(histogramme, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         notHasEglise.setBackground(new java.awt.Color(255, 255, 255));
@@ -218,7 +343,7 @@ public class EglisePanel extends javax.swing.JPanel {
         notHasEgliseLayout.setHorizontalGroup(
             notHasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(notHasEgliseLayout.createSequentialGroup()
-                .addContainerGap(390, Short.MAX_VALUE)
+                .addContainerGap(431, Short.MAX_VALUE)
                 .addGroup(notHasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(notHasEgliseLayout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -226,7 +351,7 @@ public class EglisePanel extends javax.swing.JPanel {
                         .addComponent(egliseNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(information)
                     .addComponent(createEgliseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(260, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
         notHasEgliseLayout.setVerticalGroup(
             notHasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,7 +407,42 @@ public class EglisePanel extends javax.swing.JPanel {
                     
         }
     }//GEN-LAST:event_addEglise
-    
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        Date[] dates = this.getSelectedDates();
+        Entree[] entrees = Entree.entreeEntre(dates[0], dates[1]) ;
+        Sortie[] sorties = Sortie.sortieEntre(dates[0], dates[1]);
+        fetchList(entrees,sorties);
+    }//GEN-LAST:event_jButton2MouseClicked
+    private void fetchList(Entree[] entrees, Sortie[] sorties){
+        String[][] data = new String[entrees.length][3];
+        for (int i = 0; i < entrees.length; i++){
+            data[i][1] = entrees[i].motif;
+            data[i][2] = String.valueOf(entrees[i].montantEntree);
+            data[i][0] = entrees[i].dateEntree.toString();
+        }
+        if(entrees.length == 0){
+                this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {},new String [] {"Date d' entrée", "Motif", "Montant"})) ;
+        }else{
+            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(data,new String [] {"Date d' entrée", "Motif", "Montant"})) ;
+        }
+        data = new String[sorties.length][3];
+        for (int i = 0; i < sorties.length; i++){
+            data[i][1] = sorties[i].motif;
+            data[i][2] = String.valueOf(sorties[i].montantSortie);
+            data[i][0] = sorties[i].dateSortie.toString();
+        }
+        if(entrees.length == 0){
+                this.sortieTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {},new String [] {"Date de Sortie", "Motif", "Montant"})) ;
+        }else{
+            this.sortieTable.setModel(new javax.swing.table.DefaultTableModel(data,new String [] {"Date de Sortie", "Motif", "Montant"})) ;
+        }
+    }
     private void showPanel(){
         boolean exist = EgliseModel.hasEglise();
         System.out.println(exist);
@@ -302,25 +462,28 @@ public class EglisePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel JLabelx;
     private javax.swing.JButton createEgliseBtn;
+    private javax.swing.JPanel date1;
+    private javax.swing.JPanel date2;
     public javax.swing.JLabel egliseName;
     public javax.swing.JTextField egliseNameField;
+    private javax.swing.JTable entreeTable;
     public javax.swing.JPanel hasEglise;
     public javax.swing.JPanel histogramme;
     private javax.swing.JLabel information;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     public javax.swing.JPanel notHasEglise;
     public javax.swing.JLabel soldeValue;
+    private javax.swing.JTable sortieTable;
     // End of variables declaration//GEN-END:variables
 }

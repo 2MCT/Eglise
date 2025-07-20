@@ -121,6 +121,31 @@ public class Sortie {
             return -1;
         }
     }
+    public static Sortie[] sortieEntre(Date date1, Date date2){
+        Connection con = Connexion.connect();
+        try{
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM SORTIE WHERE '"+ date1 +"' <= date_sortie AND date_sortie <= '"+date2+"';");
+            ResultSet res = stmt.executeQuery();
+            int l = 0;
+            while(res.next()){
+                l++;
+            }
+            Sortie[] sorties = new Sortie[l];
+            stmt = con.prepareStatement("SELECT * FROM SORTIE WHERE '"+ date1 +"' <= date_sortie AND date_sortie <= '"+date2+"';");
+            res = stmt.executeQuery();
+            int i = 0 ;
+            while(res.next()){
+                sorties[i] = new Sortie(res.getInt("idsortie"),res.getString("motif"),res.getDate("date_sortie"),res.getInt("montant_sortie"));
+                i++;
+            }
+            System.out.println(sorties.length);
+            return sorties;
+        }
+        catch(SQLException E){
+            System.err.println(E);
+            return null;
+        }
+    }
     public static Sortie getSortie(int id){
         Sortie sortie = new Sortie();
         sortie.idSortie = id;

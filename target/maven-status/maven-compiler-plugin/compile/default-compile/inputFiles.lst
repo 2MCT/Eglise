@@ -4,6 +4,7 @@
 /home/christalin/Eglise/Eglise/src/main/java/com/eglise/Model/EgliseModel.java
 /home/christalin/Eglise/Eglise/src/main/java/com/eglise/Model/Entree.java
 /home/christalin/Eglise/Eglise/src/main/java/com/eglise/Model/Sortie.java
+/home/christalin/Eglise/Eglise/src/main/java/com/eglise/UI/Chart.java
 /home/christalin/Eglise/Eglise/src/main/java/com/eglise/UI/EglisePanel.java
 /home/christalin/Eglise/Eglise/src/main/java/com/eglise/UI/EntreePanel.java
 /home/christalin/Eglise/Eglise/src/main/java/com/eglise/UI/HomePanel.java
