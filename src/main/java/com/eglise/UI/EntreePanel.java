@@ -5,8 +5,18 @@
 package com.eglise.UI;
 import com.eglise.Model.Entree;
 import com.eglise.Model.EgliseModel;
+import com.eglise.Model.Sortie;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.sql.Date;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -23,9 +33,14 @@ public class EntreePanel extends javax.swing.JPanel {
             fetchList();
         }
         catch(Exception E){
-            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {{"Aucun","données","disponible"}},new String [] {"ID_ENTREE", "MOTIF", "MONTANT", "DATE"})) ;
+            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {{"Aucun","données","disponible"}},new String [] {"ID_ENTREE", "MOTIF", "MONTANT", "DATE", "ACTION"})) ;
             System.out.println(E);
         }
+        this.entreeTable.getColumnModel().getColumn(0).setPreferredWidth(60);
+        this.entreeTable.getColumnModel().getColumn(1).setPreferredWidth(300);
+        this.entreeTable.getColumnModel().getColumn(2).setPreferredWidth(60);
+        this.entreeTable.getColumnModel().getColumn(3).setPreferredWidth(70);
+        this.entreeTable.getColumnModel().getColumn(4).setPreferredWidth(100);
     }
 
     /**
@@ -47,24 +62,27 @@ public class EntreePanel extends javax.swing.JPanel {
         montantField = new javax.swing.JTextField();
         ajoutBtn = new javax.swing.JButton();
         infoLabel = new javax.swing.JLabel();
+        rechercheField = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
 
-        entreeTable.setBackground(new java.awt.Color(204, 255, 255));
-        entreeTable.setFont(new java.awt.Font("Quicksand Light", 3, 18)); // NOI18N
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        entreeTable.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         entreeTable.setForeground(new java.awt.Color(51, 51, 51));
         entreeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID_ENTREE", "MOTIF", "MONTANT", "DATE"
+                "ID_ENTREE", "MOTIF", "MONTANT", "DATE", "SUPPRIMER", "MODIFIER"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -75,6 +93,11 @@ public class EntreePanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        entreeTable.setRowHeight(40);
+        entreeTable.setRowMargin(5);
+        entreeTable.setRowSelectionAllowed(false);
+        entreeTable.setShowGrid(true);
+        entreeTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(entreeTable);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 255));
@@ -147,28 +170,46 @@ public class EntreePanel extends javax.swing.JPanel {
                 .addComponent(ajoutBtn)
                 .addGap(28, 28, 28)
                 .addComponent(infoLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
+
+        jButton1.setText("Rechercher");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                fetchList(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(70, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 765, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 69, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addGap(52, 52, 52)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(rechercheField, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 765, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(61, 61, 61))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE))
-                .addContainerGap(231, Short.MAX_VALUE))
+                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(rechercheField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -213,25 +254,43 @@ public class EntreePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_ajoutEntree
 
+    private void fetchList(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fetchList
+        // TODO add your handling code here:
+        fetchList();
+    }//GEN-LAST:event_fetchList
+
     private void fetchList(){
-        Entree[] entrees = Entree.listEntree();
-        String[][] data = new String[entrees.length][4];
+        String motif_like = this.rechercheField.getText();
+        System.out.println(motif_like.isEmpty());
+        Entree[] entrees;
+        if(motif_like.isEmpty()){
+            entrees = Entree.listEntree();
+        }
+        else
+            entrees = Entree.listEntree(motif_like);
+        String[][] data = new String[entrees.length][5];
         for (int i = 0; i < entrees.length; i++){
             data[i][0] = String.valueOf(entrees[i].idEntree);
             data[i][1] = entrees[i].motif;
             data[i][2] = String.valueOf(entrees[i].montantEntree);
             data[i][3] = entrees[i].dateEntree.toString();
+            data[i][4] = "Supprimer";
         }
         if(entrees.length == 0){
-            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {},new String [] {"ID_ENTREE", "MOTIF", "MONTANT", "DATE"})) ;
+                this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {},new String [] {"ID_ENTREE", "MOTIF", "MONTANT", "DATE","SUPPRIMER","MODIFIER"})) ;
         }else{
-            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(data,new String [] {"ID_ENTREE", "MOTIF", "MONTANT", "DATE"})) ;
+            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(data,new String [] {"ID_ENTREE", "MOTIF", "MONTANT", "DATE","SUPPRIMER","MODIFIER"})) ;
+            this.entreeTable.getColumn("SUPPRIMER").setCellRenderer(new ButtonRenderer());
+            this.entreeTable.getColumn("SUPPRIMER").setCellEditor(new ButtonEditor(new JCheckBox()));
+            this.entreeTable.getColumn("MODIFIER").setCellRenderer(new ButtonModifyRenderer());
+            this.entreeTable.getColumn("MODIFIER").setCellEditor(new ButtonModifyEditor(new JCheckBox()));
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ajoutBtn;
     public javax.swing.JTable entreeTable;
     public javax.swing.JLabel infoLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -239,5 +298,128 @@ public class EntreePanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTextField montantField;
     public javax.swing.JTextField motifField;
+    private javax.swing.JTextField rechercheField;
     // End of variables declaration//GEN-END:variables
+}
+
+
+class ButtonRenderer extends JButton implements TableCellRenderer{
+    public ButtonRenderer(){
+        this.setOpaque(true);
+    }
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+        this.setText((value==null)?"Action":value.toString());
+        return this;
+    }
+}
+
+class ButtonEditor extends DefaultCellEditor{
+    private JButton button;
+    private String label;
+    private boolean clicked;
+    private JTable table;
+    private int row;
+    
+    public ButtonEditor(JCheckBox checkBox){
+        super(checkBox);
+        button = new JButton();
+        button.setOpaque(true);
+        
+        button.addActionListener(e -> fireEditingStopped());
+    }
+    
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column){
+        this.table = table;
+        this.row = row;
+        label = (value==null)?"Action" : value.toString();
+        button.setText(label);
+        clicked = true;
+        return button;
+    }
+    public Object getCellEditorValue(){
+        if(clicked){
+            String id = table.getValueAt(row, 0).toString();
+            int choix = JOptionPane.showConfirmDialog(button, "Supprimer "+id+" ?","Spprimer",JOptionPane.YES_NO_CANCEL_OPTION);
+            
+            if(choix == JOptionPane.YES_OPTION){
+                Entree entree = new Entree(Integer.parseInt(id));
+                int is_deleted = entree.delete();
+                if(is_deleted == 1)
+                    ((DefaultTableModel) table.getModel()).removeRow(row);
+                else
+                    JOptionPane.showMessageDialog(button, "Suppression echouée, solde inssuffisant");
+            }
+        }
+        clicked = false;
+        return label;
+    }
+    public boolean stopCellEditing(){
+        clicked = false;
+        return super.stopCellEditing();
+    }
+}
+
+class ButtonModifyRenderer extends JButton implements TableCellRenderer{
+    public ButtonModifyRenderer(){
+        this.setOpaque(true);
+    }
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+        this.setText((value==null)?"Modifier":value.toString());
+        return this;
+    }
+}
+class ButtonModifyEditor extends DefaultCellEditor{
+    private JButton button;
+    private String label;
+    private boolean clicked;
+    private JTable table;
+    private int row;
+    
+    public ButtonModifyEditor(JCheckBox checkBox){
+        super(checkBox);
+        button = new JButton();
+        button.setOpaque(true);
+        
+        button.addActionListener(e -> fireEditingStopped());
+    }
+    
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column){
+        this.table = table;
+        this.row = row;
+        label = (value==null)?"Modifier" : value.toString();
+        button.setText(label);
+        clicked = true;
+        return button;
+    }
+    public Object getCellEditorValue(){
+        if(clicked){
+            String id = table.getValueAt(row, 0).toString();
+            String mot = table.getValueAt(row, 1).toString();
+            int montant = Integer.parseInt(table.getValueAt(row, 2).toString());
+            Date date = Date.valueOf(table.getValueAt(row, 3).toString());
+            Entree entree = new Entree(Integer.parseInt(id));
+            EgliseModel e = EgliseModel.getEglise();
+            int m = entree.montantEntree-montant;
+            if(e.solde-m < 10000){
+                JOptionPane.showMessageDialog(table, "Erreur lors de la modification, Montant inssufisant");
+                table.setValueAt(entree.idEntree, row, 0);
+                table.setValueAt(entree.motif, row, 1);
+                table.setValueAt(entree.montantEntree, row, 2);
+                table.setValueAt(entree.dateEntree, row, 3);
+            }
+            else{
+                e.addSolde(-m);
+                if(entree.update(mot, date, montant)==1)
+                    JOptionPane.showMessageDialog(table, "Modification effectué avec, succèss");
+                else 
+                    JOptionPane.showMessageDialog(table, "Erreur lors de la modification");
+            }
+        }
+        clicked = false;
+        return label;
+    }
+    public boolean stopCellEditing(){
+        clicked = false;
+        return super.stopCellEditing();
+    }
 }

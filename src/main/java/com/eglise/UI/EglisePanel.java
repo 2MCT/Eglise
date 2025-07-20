@@ -4,6 +4,7 @@
  */
 package com.eglise.UI;
 import com.eglise.Model.EgliseModel;
+import java.awt.Color;
 
 /**
  *
@@ -17,6 +18,12 @@ public class EglisePanel extends javax.swing.JPanel {
     public EglisePanel() {
         initComponents();
         showPanel();
+        if(Integer.parseInt(this.soldeValue.getText().split(" ")[0])<10000){
+            this.soldeValue.setForeground(Color.red);
+        }
+        else{
+            this.soldeValue.setForeground(Color.black);
+        }
     }
 
     /**
@@ -29,18 +36,35 @@ public class EglisePanel extends javax.swing.JPanel {
     private void initComponents() {
 
         hasEglise = new javax.swing.JPanel();
-        egliseName = new javax.swing.JLabel();
+        JLabelx = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         soldeValue = new javax.swing.JLabel();
+        histogramme = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        egliseName = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         notHasEglise = new javax.swing.JPanel();
         information = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         createEgliseBtn = new javax.swing.JButton();
         egliseNameField = new javax.swing.JTextField();
 
-        egliseName.setFont(new java.awt.Font("Quicksand Light", 3, 24)); // NOI18N
-        egliseName.setForeground(new java.awt.Color(0, 0, 102));
-        egliseName.setText("Nom de l'Eglise");
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        hasEglise.setBackground(new java.awt.Color(255, 255, 255));
+
+        JLabelx.setFont(new java.awt.Font("Quicksand Light", 3, 24)); // NOI18N
+        JLabelx.setForeground(new java.awt.Color(0, 0, 102));
+        JLabelx.setText("Nom de l' Eglise");
 
         jLabel1.setFont(new java.awt.Font("Quicksand Light", 1, 18)); // NOI18N
         jLabel1.setText("Solde :");
@@ -48,31 +72,128 @@ public class EglisePanel extends javax.swing.JPanel {
         soldeValue.setFont(new java.awt.Font("Quicksand Light", 1, 18)); // NOI18N
         soldeValue.setText("0 Ar");
 
+        histogramme.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel2.setText("Histogramme de flux de caisse");
+
+        javax.swing.GroupLayout histogrammeLayout = new javax.swing.GroupLayout(histogramme);
+        histogramme.setLayout(histogrammeLayout);
+        histogrammeLayout.setHorizontalGroup(
+            histogrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, histogrammeLayout.createSequentialGroup()
+                .addContainerGap(100, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addContainerGap(100, Short.MAX_VALUE))
+        );
+        histogrammeLayout.setVerticalGroup(
+            histogrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(histogrammeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        egliseName.setFont(new java.awt.Font("Quicksand Light", 0, 18)); // NOI18N
+        egliseName.setForeground(new java.awt.Color(0, 0, 102));
+        egliseName.setText("Mouvement de caisse entre 2 dates");
+
+        jLabel4.setText("Entre");
+
+        jLabel5.setText("Mouvement d' entrée en caisse");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Date d' entrée", "Motif", "Montant"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel6.setText("Mouvement de sortie en caisse");
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Date de sortie", "Motif", "Montant"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable2);
+
+        jLabel7.setText("Total Montant Entrant : ");
+
+        jLabel8.setText("Total Montant Sortant : ");
+
+        jButton1.setText("Obtenir un PDF");
+
         javax.swing.GroupLayout hasEgliseLayout = new javax.swing.GroupLayout(hasEglise);
         hasEglise.setLayout(hasEgliseLayout);
         hasEgliseLayout.setHorizontalGroup(
             hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(hasEgliseLayout.createSequentialGroup()
-                .addContainerGap(173, Short.MAX_VALUE)
                 .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(egliseName, javax.swing.GroupLayout.PREFERRED_SIZE, 519, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(hasEgliseLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel6)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)
+                            .addComponent(jButton1)))
+                    .addGroup(hasEgliseLayout.createSequentialGroup()
+                        .addGap(14, 14, 14)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(50, 50, 50)
-                        .addComponent(soldeValue)))
-                .addContainerGap(65, Short.MAX_VALUE))
+                        .addGap(25, 25, 25)
+                        .addComponent(soldeValue))
+                    .addComponent(JLabelx, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(hasEgliseLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(egliseName, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                .addComponent(histogramme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
         );
         hasEgliseLayout.setVerticalGroup(
             hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(hasEgliseLayout.createSequentialGroup()
-                .addContainerGap(43, Short.MAX_VALUE)
-                .addComponent(egliseName, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(soldeValue))
-                .addContainerGap(128, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(hasEgliseLayout.createSequentialGroup()
+                        .addComponent(JLabelx, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)
+                        .addGroup(hasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(soldeValue)
+                            .addComponent(jLabel1))
+                        .addGap(39, 39, 39)
+                        .addComponent(egliseName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)
+                        .addGap(0, 71, Short.MAX_VALUE))
+                    .addComponent(histogramme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
+
+        notHasEglise.setBackground(new java.awt.Color(255, 255, 255));
 
         information.setFont(new java.awt.Font("Quicksand Light", 0, 18)); // NOI18N
         information.setText("Aucune Eglise n'est enregistré");
@@ -97,7 +218,7 @@ public class EglisePanel extends javax.swing.JPanel {
         notHasEgliseLayout.setHorizontalGroup(
             notHasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(notHasEgliseLayout.createSequentialGroup()
-                .addContainerGap(236, Short.MAX_VALUE)
+                .addContainerGap(390, Short.MAX_VALUE)
                 .addGroup(notHasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(notHasEgliseLayout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -105,12 +226,12 @@ public class EglisePanel extends javax.swing.JPanel {
                         .addComponent(egliseNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(information)
                     .addComponent(createEgliseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(260, Short.MAX_VALUE))
         );
         notHasEgliseLayout.setVerticalGroup(
             notHasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(notHasEgliseLayout.createSequentialGroup()
-                .addContainerGap(61, Short.MAX_VALUE)
+                .addContainerGap(172, Short.MAX_VALUE)
                 .addComponent(information)
                 .addGap(27, 27, 27)
                 .addGroup(notHasEgliseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -118,7 +239,7 @@ public class EglisePanel extends javax.swing.JPanel {
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(createEgliseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -169,7 +290,7 @@ public class EglisePanel extends javax.swing.JPanel {
             this.notHasEglise.setVisible(false);
             this.hasEglise.setVisible(true);
             EgliseModel eglise = EgliseModel.getEglise();
-            this.egliseName.setText(eglise.design);
+            this.JLabelx.setText(eglise.design);
             this.soldeValue.setText(String.valueOf(eglise.solde)+" Ar");
         }
         else{
@@ -179,13 +300,26 @@ public class EglisePanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JLabel JLabelx;
     private javax.swing.JButton createEgliseBtn;
     public javax.swing.JLabel egliseName;
     public javax.swing.JTextField egliseNameField;
     public javax.swing.JPanel hasEglise;
+    public javax.swing.JPanel histogramme;
     private javax.swing.JLabel information;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     public javax.swing.JPanel notHasEglise;
     public javax.swing.JLabel soldeValue;
     // End of variables declaration//GEN-END:variables

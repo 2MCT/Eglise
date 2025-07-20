@@ -3,7 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package com.eglise.UI;
-
+import com.eglise.Model.Sortie;
+import com.eglise.Model.EgliseModel;
+import com.eglise.Model.Entree;
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import java.sql.Date;
 /**
  *
  * @author christalin
@@ -15,7 +27,20 @@ public class SortiePanel extends javax.swing.JPanel {
      */
     public SortiePanel() {
         initComponents();
-    }
+        try{
+                fetchList();
+            }
+            catch(Exception E){
+                this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {{"Aucun","données","disponible"}},new String [] {"ID_SORTIE", "MOTIF", "MONTANT", "DATE"})) ;
+                System.out.println(E);
+            }
+       this.entreeTable.getColumnModel().getColumn(0).setPreferredWidth(60);
+       this.entreeTable.getColumnModel().getColumn(1).setPreferredWidth(250);
+       this.entreeTable.getColumnModel().getColumn(2).setPreferredWidth(60);
+       this.entreeTable.getColumnModel().getColumn(3).setPreferredWidth(70);
+       this.entreeTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+       this.entreeTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+   }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -26,19 +51,431 @@ public class SortiePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        entreeTable = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        motifField = new javax.swing.JTextField();
+        montantField = new javax.swing.JTextField();
+        ajoutBtn = new javax.swing.JButton();
+        infoLabel = new javax.swing.JLabel();
+        motifLikeField = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        entreeTable.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        entreeTable.setForeground(new java.awt.Color(51, 51, 51));
+        entreeTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID_SORTIE", "MOTIF", "MONTANT", "DATE", "SUPPRIMER", "MODIFIER"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        entreeTable.setRequestFocusEnabled(false);
+        entreeTable.setRowHeight(40);
+        entreeTable.setRowMargin(5);
+        entreeTable.setRowSelectionAllowed(false);
+        entreeTable.setShowGrid(true);
+        entreeTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(entreeTable);
+        if (entreeTable.getColumnModel().getColumnCount() > 0) {
+            entreeTable.getColumnModel().getColumn(0).setResizable(false);
+            entreeTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+            entreeTable.getColumnModel().getColumn(1).setResizable(false);
+            entreeTable.getColumnModel().getColumn(1).setPreferredWidth(500);
+            entreeTable.getColumnModel().getColumn(2).setResizable(false);
+            entreeTable.getColumnModel().getColumn(2).setPreferredWidth(40);
+            entreeTable.getColumnModel().getColumn(3).setResizable(false);
+            entreeTable.getColumnModel().getColumn(3).setPreferredWidth(40);
+        }
+
+        jPanel2.setBackground(new java.awt.Color(204, 204, 255));
+
+        jLabel1.setFont(new java.awt.Font("Quicksand Light", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(102, 0, 102));
+        jLabel1.setText("Enregistrer une Sortie  en Caisse");
+
+        jLabel2.setText("Motif :");
+
+        jLabel3.setText("Montant sortie :");
+
+        motifField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                motifFieldActionPerformed(evt);
+            }
+        });
+
+        montantField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                montantFieldActionPerformed(evt);
+            }
+        });
+
+        ajoutBtn.setBackground(new java.awt.Color(102, 255, 102));
+        ajoutBtn.setText("Enregistrer");
+        ajoutBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ajoutBtnajoutEntree(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(6, 6, 6)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(montantField, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                                .addComponent(motifField)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(54, Short.MAX_VALUE)
+                .addComponent(ajoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(196, 196, 196))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(jLabel1)
+                .addGap(47, 47, 47)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(motifField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(montantField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addComponent(ajoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(infoLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        motifLikeField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                motifLikeFieldActionPerformed(evt);
+            }
+        });
+
+        jButton1.setBackground(new java.awt.Color(102, 255, 102));
+        jButton1.setText("Rechercher");
+        jButton1.setAlignmentX(0.5F);
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1fetchList(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(52, 52, 52)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(motifLikeField, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(motifLikeField, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(90, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(61, 61, 61))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void motifFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_motifFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_motifFieldActionPerformed
+
+    private void montantFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_montantFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_montantFieldActionPerformed
+
+    private void ajoutBtnajoutEntree(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ajoutBtnajoutEntree
+        // TODO add your handling code here:
+        try{
+            Sortie sortie = new Sortie(this.motifField.getText(),Integer.parseInt(this.montantField.getText()));
+            if (EgliseModel.hasEglise()){
+                EgliseModel eglise = EgliseModel.getEglise();
+                if (eglise.solde - Integer.parseInt(this.montantField.getText()) < 10000){
+                    this.infoLabel.setText("Montant insuffisant pour le montant demandé");
+                    this.infoLabel.setForeground(Color.RED);
+                }
+                else{
+                    eglise.addSolde(-Integer.parseInt(this.montantField.getText()));
+                    int id = sortie.create();
+                    if (id != 0) sortie.idSortie = id;
+                    this.removeAll();
+                    initComponents();
+                    this.infoLabel.setText("Sortie enregistrée avec succès");
+                    this.infoLabel.setForeground(Color.darkGray);
+                }
+            }
+            else{
+                this.infoLabel.setText("Veillez d'abord créer une Eglise");
+                this.infoLabel.setForeground(Color.red);
+            }
+            try{
+                fetchList();
+            }
+            catch(Exception E){
+                this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {{"Aucun","données","disponible"}},new String [] {"ID_SORTIE", "MOTIF", "MONTANT", "DATE"})) ;
+                System.out.println(E);
+            }
+        }
+        catch(NumberFormatException E){
+            this.infoLabel.setText("Veillez Entrer un montant valide.");
+            this.infoLabel.setForeground(Color.red);
+            System.out.println(E);
+        }
+    }//GEN-LAST:event_ajoutBtnajoutEntree
+
+    private void motifLikeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_motifLikeFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_motifLikeFieldActionPerformed
+
+    private void jButton1fetchList(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1fetchList
+        // TODO add your handling code here:
+        fetchList();
+    }//GEN-LAST:event_jButton1fetchList
+    private void fetchList(){
+        String motif_like = this.motifLikeField.getText();
+        motif_like = motif_like.isEmpty() ? "" : motif_like;
+        Sortie[] sorties = Sortie.listSortie(motif_like);
+        String[][] data = new String[sorties.length][4];
+        for (int i = 0; i < sorties.length; i++){
+            data[i][0] = String.valueOf(sorties[i].idSortie);
+            data[i][1] = sorties[i].motif;
+            data[i][2] = String.valueOf(sorties[i].montantSortie);
+            data[i][3] = sorties[i].dateSortie.toString();
+        }
+        if(sorties.length == 0){
+            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(new String[][] {},new String [] {"ID_SORTIE", "MOTIF", "MONTANT", "DATE","SUPPRIMER","MODIFIER"})) ;
+            this.entreeTable.getColumnModel().getColumn(0).setPreferredWidth(60);
+            this.entreeTable.getColumnModel().getColumn(1).setPreferredWidth(300);
+            this.entreeTable.getColumnModel().getColumn(2).setPreferredWidth(60);
+            this.entreeTable.getColumnModel().getColumn(3).setPreferredWidth(70);
+            this.entreeTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+            this.entreeTable.getColumnModel().getColumn(5).setPreferredWidth(100);
+        }else{
+            this.entreeTable.setModel(new javax.swing.table.DefaultTableModel(data,new String [] {"ID_SORTIE", "MOTIF", "MONTANT", "DATE","SUPPRIMER","MODIFIER"})) ;
+            this.entreeTable.getColumnModel().getColumn(0).setPreferredWidth(60);
+            this.entreeTable.getColumnModel().getColumn(1).setPreferredWidth(250);
+            this.entreeTable.getColumnModel().getColumn(2).setPreferredWidth(60);
+            this.entreeTable.getColumnModel().getColumn(3).setPreferredWidth(70);
+            this.entreeTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+            this.entreeTable.getColumnModel().getColumn(5).setPreferredWidth(100);
+            this.entreeTable.getColumn("SUPPRIMER").setCellRenderer(new ButtonSortieRenderer());
+            this.entreeTable.getColumn("SUPPRIMER").setCellEditor(new ButtonSortieEditor(new JCheckBox()));
+            this.entreeTable.getColumn("MODIFIER").setCellRenderer(new ButtonSortieModifyRenderer());
+            this.entreeTable.getColumn("MODIFIER").setCellEditor(new ButtonSortieModifyEditor(new JCheckBox()));
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ajoutBtn;
+    public javax.swing.JTable entreeTable;
+    public javax.swing.JLabel infoLabel;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    public javax.swing.JTextField montantField;
+    public javax.swing.JTextField motifField;
+    private javax.swing.JTextField motifLikeField;
     // End of variables declaration//GEN-END:variables
+}
+
+class ButtonSortieRenderer extends JButton implements TableCellRenderer{
+    public ButtonSortieRenderer(){
+        this.setOpaque(true);
+    }
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+        this.setText((value==null)?"Supprimer":value.toString());
+        return this;
+    }
+}
+
+class ButtonSortieEditor extends DefaultCellEditor{
+    private JButton button;
+    private String label;
+    private boolean clicked;
+    private JTable table;
+    private int row;
+    
+    public ButtonSortieEditor(JCheckBox checkBox){
+        super(checkBox);
+        button = new JButton();
+        button.setOpaque(true);
+        
+        button.addActionListener(e -> fireEditingStopped());
+    }
+    
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column){
+        this.table = table;
+        this.row = row;
+        label = (value==null)?"Supprimer" : value.toString();
+        button.setText(label);
+        clicked = true;
+        return button;
+    }
+    public Object getCellEditorValue(){
+        if(clicked){
+            String id = table.getValueAt(row, 0).toString();
+            int choix = JOptionPane.showConfirmDialog(button, "Supprimer "+id+" ?","Spprimer",JOptionPane.YES_NO_CANCEL_OPTION);
+            
+            if(choix == JOptionPane.YES_OPTION){
+                Sortie sortie = new Sortie(Integer.parseInt(id));
+                int is_deleted = sortie.delete();
+                if(is_deleted == 1)
+                    ((DefaultTableModel) table.getModel()).removeRow(row);
+                else
+                    JOptionPane.showMessageDialog(button, "Suppression echouée, solde inssuffisant");
+            }
+        }
+        clicked = false;
+        return label;
+    }
+    public boolean stopCellEditing(){
+        clicked = false;
+        return super.stopCellEditing();
+    }
+}
+class ButtonSortieModifyRenderer extends JButton implements TableCellRenderer{
+    public ButtonSortieModifyRenderer(){
+        this.setOpaque(true);
+    }
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+        this.setText((value==null)?"Modifier":value.toString());
+        return this;
+    }
+}
+class ButtonSortieModifyEditor extends DefaultCellEditor{
+    private JButton button;
+    private String label;
+    private boolean clicked;
+    private JTable table;
+    private int row;
+    
+    public ButtonSortieModifyEditor(JCheckBox checkBox){
+        super(checkBox);
+        button = new JButton();
+        button.setOpaque(true);
+        
+        button.addActionListener(e -> fireEditingStopped());
+    }
+    
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column){
+        this.table = table;
+        this.row = row;
+        label = (value==null)?"Modifier" : value.toString();
+        button.setText(label);
+        clicked = true;
+        return button;
+    }
+    public Object getCellEditorValue(){
+        if(clicked){
+            String id = table.getValueAt(row, 0).toString();
+            String mot = table.getValueAt(row, 1).toString();
+            int montant = Integer.parseInt(table.getValueAt(row, 2).toString());
+            Date date = Date.valueOf(table.getValueAt(row, 3).toString());
+            Sortie sortie = new Sortie(Integer.parseInt(id));
+            EgliseModel e = EgliseModel.getEglise();
+            int m = -sortie.montantSortie+montant;
+            if(e.solde-m < 10000){
+                JOptionPane.showMessageDialog(table, "Erreur lors de la modification, Montant inssufisant");
+                table.setValueAt(sortie.idSortie, row, 0);
+                table.setValueAt(sortie.motif, row, 1);
+                table.setValueAt(sortie.montantSortie, row, 2);
+                table.setValueAt(sortie.dateSortie, row, 3);
+            }
+            else{
+                System.out.println(-m);
+                e.addSolde(-m);
+                if(sortie.update(mot, date, montant)==1)
+                    JOptionPane.showMessageDialog(table, "Modification effectué avec, succèss");
+                else 
+                    JOptionPane.showMessageDialog(table, "Erreur lors de la modification");
+            }
+        }
+        clicked = false;
+        return label;
+    }
+    public boolean stopCellEditing(){
+        clicked = false;
+        return super.stopCellEditing();
+    }
 }

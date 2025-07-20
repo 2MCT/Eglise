@@ -27,6 +27,17 @@ public class Sortie {
         this.montantSortie = montant;
         this.motif = mot;
     }
+    public Sortie(int id){
+        Sortie e = Sortie.getSortie(id);
+        this.idSortie = e.idSortie;
+        this.motif = e.motif;
+        this.dateSortie = e.dateSortie;
+        this.montantSortie = e.montantSortie;
+    }
+    
+    public Sortie(){
+        
+    }
     
     public int create(){
         Connection con = Connexion.connect();
@@ -66,6 +77,68 @@ public class Sortie {
         }
         catch(SQLException E){
             return -1;
+        }
+    }
+    public static Sortie[] listSortie(){
+        return Sortie.listSortie("");
+    }
+    public static Sortie[] listSortie(String motif_like){
+        Connection con = Connexion.connect();
+        try{
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM SORTIE WHERE motif LIKE '%"+motif_like+"%';");
+            ResultSet res = stmt.executeQuery();
+            int l = 0;
+            while(res.next()){
+                l++;
+            }
+            Sortie[] sorties = new Sortie[l];
+            stmt = con.prepareStatement("SELECT * FROM SORTIE WHERE motif LIKE '%"+motif_like+"%';");
+            res = stmt.executeQuery();
+            int i = 0 ;
+            while(res.next()){
+                sorties[i] = new Sortie(res.getInt("idsortie"),res.getString("motif"),res.getDate("date_sortie"),res.getInt("montant_sortie"));
+                i++;
+            }
+            System.out.println(sorties.length);
+            return sorties;
+        }
+        catch(SQLException E){
+            System.err.println(E);
+            return null;
+        }
+    }
+    public int delete(){
+        Connection con = Connexion.connect();
+        try{
+            EgliseModel eglise = EgliseModel.getEglise();
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM SORTIE WHERE idsortie=?;");
+            stmt.setInt(1, idSortie);
+            if(eglise.addSolde(this.montantSortie)==1)
+                return stmt.executeUpdate();
+            return -1;
+        }
+        catch(SQLException E){
+            return -1;
+        }
+    }
+    public static Sortie getSortie(int id){
+        Sortie sortie = new Sortie();
+        sortie.idSortie = id;
+        Connection con = Connexion.connect();
+        try{
+            PreparedStatement stmt = con.prepareStatement("SELECT motif, montant_sortie, date_sortie FROM SORTIE WHERE idsortie = ?");
+            stmt.setInt(1, id);
+            ResultSet res = stmt.executeQuery();
+            if(res.next()){
+                sortie.motif = res.getString("motif");
+                sortie.dateSortie = res.getDate("date_sortie");
+                sortie.montantSortie = res.getInt("montant_sortie");
+                return sortie;
+            }
+            return null;
+        }
+        catch(SQLException E){
+            return null;
         }
     }
 }

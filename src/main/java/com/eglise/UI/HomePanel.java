@@ -28,6 +28,8 @@ public class HomePanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         jLabel1.setFont(new java.awt.Font("Quicksand Light", 3, 40)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 0, 102));
         jLabel1.setText("Bienvenue dans l'application de Gestion de caisse de l'Eglise");
