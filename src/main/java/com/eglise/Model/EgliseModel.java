@@ -64,6 +64,21 @@ public class EgliseModel {
             return false;
         }
     }
+    public int addSolde(int entree){
+        Connection con = Connexion.connect();
+        this.solde += entree;
+        try{
+            PreparedStatement s = con.prepareStatement("UPDATE EGLISE SET solde = ? WHERE ideglise = ? ;");
+            s.setInt(1, this.solde);
+            s.setString(2, this.idEglise);
+            int created = s.executeUpdate();
+            return created;
+        }
+        catch(SQLException E){
+            System.out.println(E);
+            return 0;
+        }
+    }
     public static EgliseModel getEglise(){
         Connection con = Connexion.connect();
         try{

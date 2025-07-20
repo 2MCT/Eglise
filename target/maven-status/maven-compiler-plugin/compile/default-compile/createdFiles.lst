@@ -1,3 +1,4 @@
+com/eglise/UI/EntreePanel$3.class
 com/eglise/UI/EglisePanel.class
 com/eglise/MainWindow$3.class
 com/eglise/MainWindow$4.class
@@ -6,6 +7,7 @@ com/eglise/UI/EntreePanel.class
 com/eglise/Model/Connexion.class
 com/eglise/UI/EglisePanel$1.class
 com/eglise/Model/Entree.class
+com/eglise/UI/EntreePanel$2.class
 com/eglise/Model/EgliseModel.class
 com/eglise/UI/HomePanel.class
 com/eglise/UI/SortiePanel.class
@@ -14,4 +16,5 @@ com/eglise/Eglise.class
 com/eglise/UI/EglisePanel$2.class
 com/eglise/MainWindow$1.class
 com/eglise/Model/Sortie.class
+com/eglise/UI/EntreePanel$4.class
 com/eglise/MainWindow$2.class
